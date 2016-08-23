@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Flasky{% endblock %}
+
+{% block page_content %}
+<main class="col-md-10 main-content">
+<div class="page-header">
+    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+</div>
+<div>
+    {% if current_user.can(Permission.WRITE_ARTICLES) %}
+    {{ wtf.quick_form(form) }}
+    {% endif %}
+</div>
+<div class="post-tabs">
+    <ul class="nav nav-tabs">
+        <li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">All</a></li>
+        {% if current_user.is_authenticated %}
+        <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">Followers</a></li>
+        {% endif %}
+    </ul>
+    {% include '_posts.html' %}
+</div>
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.index') }}
+</div>
+</main>
+<aside class="col-md-2 sidebar">
+    <div class="widget">
+        <h4 class="title">关于作者</h4>
+        <img src="/static/myself.png" width="150" height="150">
+        <br>
+		<p>yinxingcjx</p>
+        <p>新手程序员</p>
+
+        <ul class="list-inline">
+            <li>
+                <a class="navbar-brand" href="http://www.weibo.com" target="_blank">
+                    <img alt="Weibo" src="/static/weibo.png" width="25" height="25">
+                </a>
+            </li>
+            <li>
+                <a class="navbar-brand" href="tencent://message/?uin=490472721&Site=&Menu=yes">
+                    <img alt="QQ" src="/static/qq.png" width="25" height="25">
+                </a>
+            </li>
+			<li>
+                <a class="navbar-brand" href="https://github.com" target="_blank">
+                    <img alt="GitHub" src="/static/github.png" width="25" height="25">
+                </a>
+            </li>
+            <li>
+                <a class="navbar-brand" href="mailto:1346036634@qq.com" target="_blank">
+                    <img alt="Weibo" src="/static/email.png" width="25" height="25">
+                </a>
+            </li>
+        </ul>
+
+
+        <hr />
+        <p>There's nothing wrong with having a little fun</p>   
+    </div>
+</aside>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}
