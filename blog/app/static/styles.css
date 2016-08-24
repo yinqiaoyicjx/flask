@@ -41,6 +41,10 @@ div.post-content {
 div.post-footer {
     text-align: right;
 }
+div.post-body {
+	overflow: hidden;
+	max-height: 400px;
+}
 ul.comments {
     list-style-type: none;
     padding: 0px;
