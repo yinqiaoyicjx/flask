@@ -7,7 +7,10 @@ from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
 from ..decorators import admin_required, permission_required
-
+from flask.ext.uploads import UploadSet,IMAGES
+from werkzeug.utils import secure_filename
+import os
+from config import basedir
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -17,6 +20,18 @@ def index():
         post = Post(body=form.body.data,
                     author=current_user._get_current_object())
         db.session.add(post)
+        db.session.commit()
+        if request.method == 'POST' and form.photo.data:
+            f=form.photo.data
+            filename = secure_filename(f.filename)
+            ext = filename.rsplit('.',1)[1]
+            new_filename=str(post.id)+'.'+ext
+            UPLOAD_FOLDER = 'app/static/image'
+            file_dir = os.path.join(basedir,UPLOAD_FOLDER)
+            f.save(os.path.join(file_dir,new_filename))
+            post.image=new_filename
+            db.session.add(post)
+                
         return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
     show_followed = False
@@ -125,9 +140,18 @@ def edit(id):
         post.body = form.body.data
         db.session.add(post)
         flash('The post has been updated.')
+        if request.method == 'POST' and form.photo.data:
+            f=form.photo.data
+            filename = secure_filename(f.filename)
+            ext = filename.rsplit('.',1)[1]
+            new_filename=str(post.id)+'.'+ext
+            UPLOAD_FOLDER = 'app/static/image'
+            file_dir = os.path.join(basedir,UPLOAD_FOLDER)
+            f.save(os.path.join(file_dir,new_filename))
+            flash("The photo has been updated.")
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
-    return render_template('edit_post.html', form=form)
+    return render_template('edit_post.html', form=form, id=post.image)
 
 
 @main.route('/follow/<username>')

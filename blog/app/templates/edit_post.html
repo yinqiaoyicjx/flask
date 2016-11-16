@@ -8,7 +8,15 @@
     <h1>Edit Post</h1>
 </div>
 <div>
-    {{ wtf.quick_form(form) }}
+	<form class="form form-horizontal" method="post" role="form" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_errors(form, hiddens="only") }}
+
+        {{ wtf.form_field(form.body) }}
+		<img  src="/static/image/{{id}}" onerror="this.style.display='none';"/>
+        {{ wtf.form_field(form.photo) }}
+		{{ wtf.form_field(form.submit) }}
+    </form>
 </div>
 {% endblock %}
 

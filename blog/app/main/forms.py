@@ -1,10 +1,12 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
     SubmitField
+from flask_wtf.file import FileAllowed, FileRequired, FileField
 from wtforms.validators import Required, Length, Email, Regexp
 from wtforms import ValidationError
 from flask.ext.pagedown.fields import PageDownField
 from ..models import Role, User
+from flask.ext.uploads import UploadSet, IMAGES
 
 
 class NameForm(Form):
@@ -52,6 +54,7 @@ class EditProfileAdminForm(Form):
 
 class PostForm(Form):
     body = PageDownField("What's on your mind?", validators=[Required()])
+    photo = FileField("up-image",validators=[FileAllowed(['jpg','png'],'Images only')])
     submit = SubmitField('Submit')
 
 

@@ -11,7 +11,14 @@
 </div>
 <div>
     {% if current_user.can(Permission.WRITE_ARTICLES) %}
-    {{ wtf.quick_form(form) }}
+	<form class="form form-horizontal" method="post" role="form" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_errors(form, hiddens="only") }}
+
+        {{ wtf.form_field(form.body) }}
+        {{ wtf.form_field(form.photo) }}
+		{{ wtf.form_field(form.submit) }}
+    </form>
     {% endif %}
 </div>
 <div class="post-tabs">
@@ -43,7 +50,7 @@
                 </a>
             </li>
             <li>
-                <a class="navbar-brand" href="tencent://message/?uin=490472721&Site=&Menu=yes">
+                <a class="navbar-brand" href="tencent://message/?uin=531421693&Site=&Menu=yes">
                     <img alt="QQ" src="/static/qq.png" width="25" height="25">
                 </a>
             </li>
@@ -70,4 +77,5 @@
 {% block scripts %}
 {{ super() }}
 {{ pagedown.include_pagedown() }}
+
 {% endblock %}
